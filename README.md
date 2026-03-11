@@ -58,6 +58,21 @@ A web version of the [Ransom Notes](https://www.geekyhobbies.com/ransom-notes-bo
 - **Voting:** Everyone ranks each submission (1 = best, N = worst). Admin then “Complete round”; the lowest total rank wins the round and gets a point.
 - **Between rounds:** Players can “Top up tiles”; admin starts the next round.
 
+## Deploy to IONOS Deploy Now
+
+1. **Connect the repo** in [IONOS Deploy Now](https://www.ionos.com/hosting/deploy-now): create a PHP project and link this GitHub repository. Add the required **IONOS_API_KEY** (and any deployment SSH secrets) as GitHub repository secrets.
+
+2. **Set the web root** in the IONOS project to **`public`** so the Laravel app is served correctly (Document root / Publish directory = `public`).
+
+3. **Push to the branch** that Deploy Now watches (or trigger the workflow from the Actions tab). The build will:
+   - Install Composer and npm dependencies and run `npm run build`
+   - Render `.deploy-now/ransom_notes/.env.template` as `.env` (with `APP_URL` set to your site URL)
+   - Run post-deploy on the server: migrations, `config:cache`, `route:cache`, and `key:generate` if `.env` has no `APP_KEY`
+
+4. **Persistent data** (kept between deploys): `database/database.sqlite`, `storage/`, and `.env`. The SQLite DB and uploads persist; `.env` is kept so `APP_KEY` and any edits are not overwritten.
+
+5. **First deploy:** The server will create the DB and run migrations. Then open your Deploy Now URL and register an account; make an admin user in tinker or your DB if needed.
+
 ## Making a user admin
 
 In tinker or a new migration/seeder:
