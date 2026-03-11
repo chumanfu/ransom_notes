@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DatabaseResetController;
 use App\Http\Controllers\Api\GameController;
 use App\Http\Controllers\Api\PromptCardController;
 use App\Http\Controllers\Api\GameRoundController;
@@ -49,4 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/games/{game}/rounds/{round}/votes', [VoteController::class, 'store']);
     Route::get('/games/{game}/rounds/{round}/votes', [VoteController::class, 'index']);
+
+    Route::post('/admin/database/reset', DatabaseResetController::class)->middleware('admin');
 });

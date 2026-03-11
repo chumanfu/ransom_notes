@@ -63,6 +63,18 @@
       </ul>
       <p v-if="cards.length === 0 && !loading" class="text-stone-500">No cards yet.</p>
     </div>
+    <div class="mt-10 pt-8 border-t border-stone-700">
+      <h2 class="text-lg font-semibold text-stone-200 mb-2">Danger zone</h2>
+      <p class="text-stone-500 text-sm mb-3">Wipe the database, re-run migrations, and re-seed. All users and data are removed; you will need to log in again (e.g. admin@example.com).</p>
+      <button
+        type="button"
+        class="rounded-lg bg-red-900/60 hover:bg-red-800/60 text-red-200 font-medium px-4 py-2 border border-red-700/60 disabled:opacity-50"
+        :disabled="resetting"
+        @click="resetDatabase"
+      >
+        {{ resetting ? 'Resetting…' : 'Reset database' }}
+      </button>
+    </div>
   </div>
 </template>
 
@@ -78,6 +90,7 @@ const selectedFile = ref(null);
 const fileInput = ref(null);
 const importing = ref(false);
 const importResult = ref('');
+const resetting = ref(false);
 
 onMounted(async () => {
   try {
@@ -128,5 +141,20 @@ async function deleteCard(card) {
   if (!confirm('Delete this card?')) return;
   await api.delete(`/prompt-cards/${card.id}`);
   cards.value = cards.value.filter((c) => c.id !== card.id);
+}
+
+async function resetDatabase() {
+  if (!confirm('Reset the entire database? All games, users, and cards will be deleted. You will be logged out.')) return;
+  resetting.value = true;
+  try {
+    const { data } = await api.post('/admin/database/reset');
+    localStorage.removeItem('token');
+    alert(data.message ?? 'Database reset. Redirecting to login.');
+    window.location.href = '/login';
+  } catch (e) {
+    alert(e.response?.data?.message ?? 'Reset failed.');
+  } finally {
+    resetting.value = false;
+  }
 }
 </script>
