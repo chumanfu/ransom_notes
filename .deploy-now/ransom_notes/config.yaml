@@ -10,7 +10,7 @@ deploy:
   # These commands run on the IONOS server after the files arrive
   post-deployment-remote-commands:
     - chmod -R 775 storage bootstrap/cache
-    - touch database/database.sqlite
+    - mkdir -p database && touch database/database.sqlite && chmod 664 database/database.sqlite
     - "[ -f .env ] || cp .env.example .env"
     - "grep -q 'APP_KEY=$' .env && php artisan key:generate --force || true"
     - php artisan migrate --force

@@ -70,6 +70,9 @@ jobs:
       - name: Generate Laravel app key
         run: php artisan key:generate --force --no-interaction
 
+      - name: Create SQLite database file
+        run: mkdir -p database && touch database/database.sqlite
+
 # Please do not touch the following action
       - name: Store deployment content
         uses: ionos-deploy-now/artifact-action@v1
