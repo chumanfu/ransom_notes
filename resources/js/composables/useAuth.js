@@ -7,10 +7,13 @@ export function useAuth() {
   const fetchUser = async () => {
     try {
       const { data } = await api.get('/user');
-      user.value = data.user;
-      return data.user;
-    } catch {
-      localStorage.removeItem('token');
+      user.value = data?.user ?? null;
+      return user.value;
+    } catch (err) {
+      // Only clear token on 401 (invalid/expired); keep token on network/5xx errors
+      if (err.response?.status === 401) {
+        localStorage.removeItem('token');
+      }
       user.value = null;
       return null;
     }

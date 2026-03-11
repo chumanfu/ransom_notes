@@ -87,9 +87,11 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '../services/api';
 import { useAuth } from '../composables/useAuth';
 
+const router = useRouter();
 const { user } = useAuth();
 const games = ref([]);
 const loading = ref(true);
@@ -112,7 +114,7 @@ async function createGame() {
   try {
     const { data } = await api.post('/games', {});
     games.value = [data, ...(games.value || [])];
-    window.location.href = `/games/${data.id}`;
+    await router.push(`/games/${data.id}`);
   } catch (e) {
     joinError.value = e.response?.data?.message ?? 'Failed to create game.';
   }
@@ -128,7 +130,7 @@ async function joinGame() {
   try {
     const { data } = await api.post('/games/join', { code });
     games.value = [data, ...(games.value || []).filter((g) => g.id !== data.id)];
-    window.location.href = `/games/${data.id}`;
+    await router.push(`/games/${data.id}`);
   } catch (e) {
     joinError.value = e.response?.data?.message ?? 'Could not join game.';
   }
