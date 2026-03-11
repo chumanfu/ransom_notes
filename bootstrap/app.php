@@ -17,5 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->report(function (Throwable $e) {
+            $logDir = storage_path('logs');
+            $crashLog = $logDir.DIRECTORY_SEPARATOR.'crash.log';
+            if (is_writable($logDir) || (@mkdir($logDir, 0777, true) && is_writable($logDir))) {
+                @file_put_contents(
+                    $crashLog,
+                    date('c').' '.get_class($e).': '.$e->getMessage().' in '.$e->getFile().':'.$e->getLine().PHP_EOL.$e->getTraceAsString().PHP_EOL,
+                    FILE_APPEND
+                );
+            }
+        });
     })->create();
