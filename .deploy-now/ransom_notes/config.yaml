@@ -1,24 +1,15 @@
 version: 1.0
 
 deploy:
-  # Keep database, storage, and .env between deploys (so APP_KEY and data persist)
-  persistent-data:
+  persistent-data:*
     - database/database.sqlite
-    - storage
-    - .env
+    - storage/app/public
 
-  # These commands run on the IONOS server after the files arrive
   post-deployment-remote-commands:
-    - mkdir -p database storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
-    - chmod -R 777 storage bootstrap/cache
+    - mkdir -p database
     - touch database/database.sqlite && chmod 664 database/database.sqlite
-    - "[ -f .env ] || cp .env.example .env"
-    - chmod 644 .env
-    - "grep -q 'APP_KEY=$' .env && php artisan key:generate --force || true"
     - php artisan migrate --force
-    - php artisan db:seed --force 2>/dev/null || true
-    - php artisan config:clear
     - php artisan config:cache
-    - php artisan route:clear
     - php artisan route:cache
-    - php artisan storage:link 2>/dev/null || true
+    - php artisan view:cache
+    - php artisan storage:link
