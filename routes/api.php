@@ -8,6 +8,22 @@ use App\Http\Controllers\Api\PlayerTilesController;
 use App\Http\Controllers\Api\VoteController;
 use Illuminate\Support\Facades\Route;
 
+// CORS preflight: browser sends OPTIONS before POST with JSON; must return 200 so the real request is sent
+Route::options('{any}', function () {
+    return response('', 204)
+        ->header('Access-Control-Allow-Origin', '*')
+        ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
+        ->header('Access-Control-Max-Age', '86400');
+})->where('any', '.*');
+
+// Debug: hit GET or POST /api/ping to confirm the request reaches Laravel (writes to public/crash.log)
+Route::match(['get', 'post'], '/ping', function () {
+    $crashLog = base_path('public/crash.log');
+    @file_put_contents($crashLog, date('c').' /api/ping '.(request()->method())."\n", FILE_APPEND);
+    return response()->json(['pong' => true]);
+});
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
