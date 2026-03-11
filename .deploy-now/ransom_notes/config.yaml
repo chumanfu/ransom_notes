@@ -1,5 +1,15 @@
-    recurring:
-      # directories that are not overwritten or removed by the next deployment
-      excludes:
-        - storage
-        - database.sqlite
+version: 1.0
+
+deploy:
+  # This ensures your SQLite database isn't wiped on every push
+  persistent-data:
+    - database/database.sqlite
+    - storage/logs
+    - storage/app/public
+
+  # These commands run on the IONOS server after the files arrive
+  post-deployment-remote-commands:
+    - touch database/database.sqlite
+    - php artisan migrate --force
+    - php artisan config:cache
+    - php artisan route:cache
