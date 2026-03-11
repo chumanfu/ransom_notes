@@ -17,12 +17,6 @@ Route::options('{any}', function () {
         ->header('Access-Control-Max-Age', '86400');
 })->where('any', '.*');
 
-// Debug: hit GET or POST /api/ping to confirm the request reaches Laravel (writes to public/crash.log)
-Route::match(['get', 'post'], '/ping', function () {
-    $crashLog = base_path('public/crash.log');
-    @file_put_contents($crashLog, date('c').' /api/ping '.(request()->method())."\n", FILE_APPEND);
-    return response()->json(['pong' => true]);
-});
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -34,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/games', [GameController::class, 'index']);
     Route::post('/games', [GameController::class, 'store'])->middleware('admin');
     Route::get('/games/{game}', [GameController::class, 'show']);
+    Route::patch('/games/{game}', [GameController::class, 'update'])->middleware('admin');
+    Route::delete('/games/{game}', [GameController::class, 'destroy'])->middleware('admin');
     Route::post('/games/join', [GameController::class, 'join']);
     Route::get('/games/{game}/state', [GameController::class, 'state']);
 

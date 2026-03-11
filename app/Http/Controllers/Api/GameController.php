@@ -44,6 +44,21 @@ class GameController extends Controller
         return response()->json($game);
     }
 
+    public function update(Request $request, Game $game): JsonResponse
+    {
+        $request->validate([
+            'name' => ['nullable', 'string', 'max:255'],
+        ]);
+        $game->update($request->only(['name']));
+        return response()->json($game->load('creator:id,name', 'players:id,name'));
+    }
+
+    public function destroy(Game $game): JsonResponse
+    {
+        $game->delete();
+        return response()->json(null, 204);
+    }
+
     public function join(Request $request): JsonResponse
     {
         $request->validate([

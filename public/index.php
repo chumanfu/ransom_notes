@@ -1,7 +1,4 @@
 <?php
-// First line: prove this script ran (even if Laravel crashes later)
-@file_put_contents(__DIR__.'/crash.log', date('c').' ENTRY '.($_SERVER['REQUEST_METHOD']??'').' '.($_SERVER['REQUEST_URI']??'')."\n", FILE_APPEND);
-
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
