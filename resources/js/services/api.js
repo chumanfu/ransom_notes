@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Use single-path gateway so hosts that block /api or /v1 still reach Laravel
+// All API requests go to "/" (only URL that reaches Laravel on IONOS) with X-API-Path header
 const api = axios.create({
-  baseURL: '/g',
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -14,10 +14,9 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-  // Tell gateway which API path to dispatch (e.g. /v1/login)
-  const path = config.url ?? '';
-  config.headers['X-API-Path'] = path.startsWith('/') ? path : `/${path}`;
-  config.headers['X-API-Path'] = config.headers['X-API-Path'].startsWith('/v1') ? config.headers['X-API-Path'] : `/v1${config.headers['X-API-Path']}`;
+  // Request goes to "/"; gateway dispatches using this header (e.g. /v1/login)
+  const path = (config.url ?? '').replace(/^\//, '');
+  config.headers['X-API-Path'] = path.startsWith('v1/') ? `/${path}` : `/v1/${path}`;
   config.url = '';
   return config;
 });
