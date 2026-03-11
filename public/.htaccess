@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Force all /api/* requests to the front controller (some hosts handle /api differently)
+    RewriteRule ^api/ index.php [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
