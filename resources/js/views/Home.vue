@@ -51,8 +51,8 @@
             <button type="button" class="text-sm text-stone-400 hover:text-stone-300" @click="cancelEdit">Cancel</button>
           </template>
           <template v-else>
-            <span class="font-medium text-stone-200">{{ g.name }}</span>
-            <span class="text-stone-500 text-sm">#{{ g.code }}</span>
+            <span class="font-medium text-stone-200">{{ g.name || 'Unnamed game' }}</span>
+            <span class="text-stone-500 text-sm">#{{ g.code || '--' }}</span>
             <span
               class="text-xs px-2 py-0.5 rounded"
               :class="
@@ -101,7 +101,8 @@ const editName = ref('');
 onMounted(async () => {
   try {
     const { data } = await api.get('/games');
-    games.value = data.data ?? data;
+    // API returns Laravel paginator: { data: [...], current_page, ... }
+    games.value = Array.isArray(data?.data) ? data.data : Array.isArray(data) ? data : [];
   } finally {
     loading.value = false;
   }
@@ -156,7 +157,8 @@ async function saveName(g) {
 }
 
 async function deleteGame(g) {
-  if (!confirm(`Delete game "${g.name}" (#${g.code})? This cannot be undone.`)) return;
+  const label = (g.name || 'Unnamed game') + ' (#' + (g.code || '--') + ')';
+  if (!confirm(`Delete game "${label}"? This cannot be undone.`)) return;
   try {
     await api.delete(`/games/${g.id}`);
     games.value = games.value.filter((x) => x.id !== g.id);

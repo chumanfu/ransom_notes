@@ -16,6 +16,13 @@ class GameController extends Controller
             $query->whereHas('players', fn ($q) => $q->where('user_id', $request->user()->id));
         }
         $games = $query->latest()->paginate(20);
+        // Ensure each item has name/code for the list UI (guard against legacy or partial data)
+        $games->getCollection()->transform(function (Game $game) {
+            return array_merge($game->toArray(), [
+                'name' => $game->name ?? 'Unnamed game',
+                'code' => $game->code ?? '',
+            ]);
+        });
         return response()->json($games);
     }
 
