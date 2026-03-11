@@ -5,7 +5,8 @@
 
     RewriteEngine On
 
-    # Force all /api/* requests to the front controller (some hosts handle /api differently)
+    # Force /v1/* and /api/* to the front controller (some hosts handle /api before PHP)
+    RewriteRule ^v1/ index.php [L]
     RewriteRule ^api/ index.php [L]
 
     # Handle Authorization Header
