@@ -1,0 +1,13 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Pass Authorization header to PHP (required for API Bearer tokens)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # If the request is for a real file or directory, serve it
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # Otherwise send to index.php (this file's directory = project root)
+    RewriteRule ^ index.php [L]
+</IfModule>
