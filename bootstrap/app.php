@@ -20,6 +20,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+        // API gateway: POST / with ?_r=/v1/... is API traffic, not a form; no CSRF token sent
+        $middleware->validateCsrfTokens(except: ['/']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->report(function (Throwable $e) {
