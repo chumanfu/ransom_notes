@@ -1,7 +1,7 @@
 version: 1.0
 
 deploy:
-  persistent-data:*
+  persistent-data:
     - database/database.sqlite
     - storage/app/public
 
