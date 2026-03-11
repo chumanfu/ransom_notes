@@ -13,11 +13,9 @@ Route::match(['get', 'post', 'put', 'patch', 'delete', 'options'], '/', function
             $request->method() === 'GET' ? $request->query() : [],
             $request->cookies->all(),
             $request->file(),
-            $request->server()
+            $request->server(),
+            $request->getContent()
         );
-        if ($request->getContent()) {
-            $sub->setContent($request->getContent());
-        }
         $sub->headers->replace($request->headers->all());
         return app()->handle($sub);
     }
