@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
-// SPA fallback: serve app for any path that does not start with v1 or api (so API routes are hit first)
-Route::get('/{any?}', function () {
-    return view('app');
-})->where('any', '(?!v1|api).*');
+// SPA: serve app shell for these paths so Vue Router can handle them. All other paths (e.g. /api/*) hit API routes.
+Route::get('/', fn () => view('app'));
+Route::get('/login', fn () => view('app'));
+Route::get('/register', fn () => view('app'));
+Route::get('/games/{id}', fn () => view('app'))->where('id', '[0-9]+');
+Route::get('/admin/cards', fn () => view('app'));
