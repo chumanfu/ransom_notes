@@ -3,8 +3,8 @@
     RewriteBase /
 
     # Pass Authorization header to PHP (uncomment if API auth fails with 401 on this host)
-    # RewriteCond %{HTTP:Authorization} .
-    # RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
     # Send requests to Laravel front controller (skip real files/dirs)
     RewriteCond %{REQUEST_FILENAME} !-d
