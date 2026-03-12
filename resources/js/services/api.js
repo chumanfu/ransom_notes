@@ -11,7 +11,10 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    const value = `Bearer ${token}`;
+    config.headers.Authorization = value;
+    // Some hosts (e.g. IONOS Apache) strip Authorization; backend accepts this as fallback
+    config.headers['X-Authorization'] = value;
   }
   return config;
 });

@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+        // So Sanctum sees the token when Apache passes it via REDIRECT_HTTP_AUTHORIZATION
+        $middleware->api(prepend: [
+            \App\Http\Middleware\AddAuthorizationHeader::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->report(function (Throwable $e) {
