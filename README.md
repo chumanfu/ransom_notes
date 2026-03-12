@@ -62,7 +62,10 @@ A web version of the [Ransom Notes](https://www.geekyhobbies.com/ransom-notes-bo
 
 1. **Connect the repo** in [IONOS Deploy Now](https://www.ionos.com/hosting/deploy-now): create a PHP project and link this GitHub repository. Add the required **IONOS_API_KEY** (and any deployment SSH secrets) as GitHub repository secrets.
 
-2. **Set the web root** in the IONOS project to **`public`** so the Laravel app is served correctly (Document root / Publish directory = `public`).
+2. **Set the web root** in the IONOS project:
+   - **Public folder path:** IONOS may only allow **`/public`** (with slash)—that’s fine. The app works whether the document root is the `public` folder or the project root (root `index.php` and `.htaccess` handle both).
+   - **PHP version:** 8.2 or 8.3 (if you see 500s on 8.4, try 8.2).
+   - In **Deployment viewer** confirm the deployed tree has `index.php` and `.htaccess` in the folder that’s used as the web root.
 
 3. **Push to the branch** that Deploy Now watches (or trigger the workflow from the Actions tab). The build will:
    - Install Composer and npm dependencies and run `npm run build`
