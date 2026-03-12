@@ -7,16 +7,19 @@ $spaOrError = function () {
     try {
         return view('app');
     } catch (Throwable $e) {
-        $crashLog = base_path('public/crash.log');
+        $logDir = storage_path('logs');
+        if (! is_dir($logDir)) {
+            @mkdir($logDir, 0755, true);
+        }
         @file_put_contents(
-            $crashLog,
-            date('c') . ' SPA view: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine() . PHP_EOL . $e->getTraceAsString() . PHP_EOL,
+            $logDir.'/crash.log',
+            date('c').' SPA view: '.$e->getMessage().' in '.$e->getFile().':'.$e->getLine().PHP_EOL.$e->getTraceAsString().PHP_EOL,
             FILE_APPEND
         );
         $showError = config('app.debug');
         $message = $showError
-            ? htmlspecialchars($e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine())
-            : 'Server error. Check public/crash.log or set APP_DEBUG=true in .env to see details.';
+            ? htmlspecialchars($e->getMessage().' in '.$e->getFile().':'.$e->getLine())
+            : 'Server error. Check storage/logs/crash.log or set APP_DEBUG=true in .env to see details.';
         return response(
             '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Error</title></head><body style="font-family:sans-serif;max-width:600px;margin:2rem auto;padding:1rem;"><h1>Application Error</h1><pre style="white-space:pre-wrap;background:#f5f5f5;padding:1rem;">' . $message . '</pre></body></html>',
             500,

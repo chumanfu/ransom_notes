@@ -1,24 +1,11 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
-    </IfModule>
-
     RewriteEngine On
 
-    # Pass Authorization header to PHP (required for API Bearer tokens / Sanctum)
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    # Pass Authorization header to PHP (uncomment if API auth fails with 401 on this host)
+    # RewriteCond %{HTTP:Authorization} .
+    # RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-    # Pass X-XSRF-Token header (used by Laravel for cookie-based CSRF)
-    RewriteCond %{HTTP:x-xsrf-token} .
-    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
-
-    # Redirect trailing slashes (e.g. /api/user/ -> /api/user)
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
-
-    # Send all other requests to the front controller
+    # Send requests to Laravel front controller (skip real files/dirs)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
