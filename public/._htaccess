@@ -6,8 +6,8 @@
     RewriteEngine On
 
     # Force /v1/* and /api/* to the front controller (some hosts handle /api before PHP)
-    RewriteRule ^v1/ /index.php [L]
-    RewriteRule ^api/ /index.php [L]
+    # RewriteRule ^v1/ /index.php [L]
+    # RewriteRule ^api/ /index.php [L]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
@@ -25,5 +25,5 @@
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ /index.php [L]
+    # RewriteRule ^ /index.php [L]
 </IfModule>
