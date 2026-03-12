@@ -1,5 +1,6 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    RewriteBase /
 
     # Pass Authorization header to PHP (uncomment if API auth fails with 401 on this host)
     # RewriteCond %{HTTP:Authorization} .
